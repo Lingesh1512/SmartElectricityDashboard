@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Electricity Usage Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<!-- Animated background (pure CSS) -->
+<div class="bg" aria-hidden="true">
+  <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
+  <span class="wave"></span>
+  <span class="p" style="left:8%;animation-duration:14s"></span><span class="p" style="left:22%;animation-duration:19s;animation-delay:2s"></span>
+  <span class="p" style="left:38%;animation-duration:16s;animation-delay:5s"></span><span class="p" style="left:55%;animation-duration:21s;animation-delay:1s"></span>
+  <span class="p" style="left:70%;animation-duration:15s;animation-delay:7s"></span><span class="p" style="left:85%;animation-duration:18s;animation-delay:3s"></span>
+  <span class="p" style="left:95%;animation-duration:23s;animation-delay:6s"></span>
+</div>
+
+<div id="loader" class="loader"><div class="bolt">⚡</div><p>Loading dashboard...</p></div>
+<div id="error" class="error" hidden></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><span class="bolt">⚡</span><span class="label">SmartEnergy</span></div>
+  <nav>
+    <a href="#dashboard" class="active" data-section="dashboard"><i>🏠</i><span class="label">Dashboard</span></a>
+    <a href="#records" data-section="records"><i>📋</i><span class="label">Usage Records</span></a>
+    <a href="#analytics" data-section="analytics"><i>📊</i><span class="label">Analytics</span></a>
+    <a href="#tips" data-section="tips"><i>💡</i><span class="label">Energy Tips</span></a>
+    <a href="#about" data-section="about"><i>ℹ️</i><span class="label">About</span></a>
+  </nav>
+</aside>
+<div class="scrim" id="scrim"></div>
+
+<div class="main">
+  <header class="topbar">
+    <button id="menuBtn" class="icon-btn menu-btn" aria-label="Open menu">☰</button>
+    <div class="title">
+      <h1><span class="bolt">⚡</span> Smart Electricity Usage Dashboard</h1>
+      <p>Track • Analyze • Save Energy • A Greener Tomorrow</p>
+    </div>
+    <div class="controls">
+      <label>Select Month:<select id="monthSel"><option value="all">All</option></select></label>
+      <label>Select Appliance:<select id="appSel"><option value="all">All</option></select></label>
+      <button id="themeBtn" class="icon-btn" aria-label="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <section id="dashboard" class="section">
+    <div class="kpis">
+      <article class="card kpi k1"><div class="ico">⚡</div><div><h3>Total Consumption</h3><b id="kTotal">0</b><small>kWh</small></div><canvas class="spark" id="s1"></canvas></article>
+      <article class="card kpi k2"><div class="ico">₹</div><div><h3>Total Cost</h3><b id="kCost">0</b><small>INR</small></div><canvas class="spark" id="s2"></canvas></article>
+      <article class="card kpi k3"><div class="ico">📈</div><div><h3>Average Daily Usage</h3><b id="kAvg">0</b><small>kWh / day</small></div><canvas class="spark" id="s3"></canvas></article>
+      <article class="card kpi k4"><div class="ico">📅</div><div><h3>Total Days</h3><b id="kDays">0</b><small>days</small></div><canvas class="spark" id="s4"></canvas></article>
+    </div>
+    <div class="grid">
+      <article class="card wide"><h2>Daily Electricity Consumption</h2><div class="chart"><canvas id="lineChart"></canvas></div></article>
+      <article class="card"><h2>Cost per Appliance</h2><div class="chart"><canvas id="barChart"></canvas></div></article>
+      <article class="card"><h2>Appliance-wise Consumption</h2><div class="chart"><canvas id="donutChart"></canvas></div></article>
+    </div>
+  </section>
+
+  <section id="records" class="section">
+    <article class="card">
+      <div class="row"><h2>Electricity Usage Records</h2>
+        <input id="search" type="search" placeholder="Search date, day or appliance..." aria-label="Search records"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>S.No</th><th data-sort="date">Date ⇅</th><th data-sort="day">Day ⇅</th><th data-sort="appliance">Appliance ⇅</th>
+            <th data-sort="consumption">Consumption (kWh) ⇅</th><th data-sort="cost">Cost (INR) ⇅</th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="pager"><button id="prev" class="btn">Prev</button><span id="pageInfo"></span><button id="next" class="btn">Next</button></div>
+    </article>
+  </section>
+
+  <section id="analytics" class="section">
+    <h2 class="sec-title">Analytics</h2>
+    <div class="stats">
+      <article class="card stat"><h3>Highest Consumption Day</h3><b id="aHigh">-</b><small id="aHighSub"></small></article>
+      <article class="card stat"><h3>Lowest Consumption Day</h3><b id="aLow">-</b><small id="aLowSub"></small></article>
+      <article class="card stat"><h3>Most Expensive Appliance</h3><b id="aExp">-</b><small id="aExpSub"></small></article>
+      <article class="card stat"><h3>Most-used Appliance</h3><b id="aUsed">-</b><small id="aUsedSub"></small></article>
+      <article class="card stat"><h3>Total Consumption</h3><b id="aTotal">0</b><small>kWh</small></article>
+      <article class="card stat"><h3>Total Cost</h3><b id="aCost">0</b><small>INR</small></article>
+    </div>
+  </section>
+
+  <section id="tips" class="section">
+    <h2 class="sec-title">Energy Tips</h2>
+    <div class="tips">
+      <article class="card tip"><span>❄️</span><h3>Reduce unnecessary AC usage</h3><p>Set it to 24–26 °C and use a fan alongside to cool rooms faster.</p></article>
+      <article class="card tip"><span>💡</span><h3>Switch off unused lights</h3><p>Turn lights off when you leave a room and use LED bulbs.</p></article>
+      <article class="card tip"><span>🌟</span><h3>Use energy-efficient appliances</h3><p>Look for high star-rated appliances; they pay back in lower bills.</p></article>
+      <article class="card tip"><span>🔌</span><h3>Avoid standby power consumption</h3><p>Unplug chargers and TVs, or use a switched power strip.</p></article>
+      <article class="card tip"><span>☀️</span><h3>Use natural lighting</h3><p>Open curtains in the daytime instead of switching lights on.</p></article>
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <article class="card"><h2>About</h2>
+      <p>Smart Electricity Usage Dashboard reads daily records from <code>electricity-data.json</code> with fetch() and calculates every total, chart and table in the browser. Built with HTML, CSS, JavaScript and Chart.js.</p></article>
+  </section>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
